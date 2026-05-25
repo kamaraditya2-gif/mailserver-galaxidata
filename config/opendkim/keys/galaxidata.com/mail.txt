@@ -1,0 +1,3 @@
+mail._domainkey	IN	TXT	( "v=DKIM1; h=sha256; k=rsa; "
+	  "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtvtLyp4pMxEsl+H73as4vTxj7i/e4qv1cfiX0Zf47W4OTE6RCuOw3XekW4NW0cvuTwyu5EH7Nc/EkEejyFpyiGheSeBuNNPIOFNw7y6FfnjwN6+Wthdfw8uORDMBv/NeX+CYLZ2bpK77LiZMC8rsc8QCDDWfnwex2N4chQO/FVIINJxTzyT40TfLQv4iuqEisi+MqkqjbzMpEU"
+	  "flIl/7KfxJ44YoYFYP8MZrB3j0M2mwJT+ZgijoZViytQZmY9iuHQ5fpraoMDv0v4aij1dwEaJ98dwR8WtIC0uu7k7rt/ir2NNR91TtO0kaySq15XPoC4g8tm5k0rm+lKr0XwOahQIDAQAB" )  ; ----- DKIM key mail for galaxidata.com

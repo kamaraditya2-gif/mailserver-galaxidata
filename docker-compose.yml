@@ -1,0 +1,63 @@
+version: "3.8"
+
+# ============================================================
+# MAIL SERVER STACK — GALAXIDATA.COM ONLY
+# Terpisah total dari daddysgsshop.dpdns.org
+# ============================================================
+
+services:
+  galaxidata-mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: galaxidata-mailserver
+    hostname: mail
+    domainname: galaxidata.com
+    env_file: mailserver.env
+    ports:
+      - "127.0.0.1:25:25"     # SMTP (receive)
+      - "127.0.0.1:587:587"   # SMTP Submission (TLS)
+      - "127.0.0.1:993:993"   # IMAP (SSL)
+    volumes:
+      - galaxidata-mail-data:/var/mail
+      - galaxidata-mail-state:/var/mail-state
+      - galaxidata-mail-logs:/var/log/mail
+      - ./config:/tmp/docker-mailserver
+      - ./cert.pem:/tmp/docker-mailserver/ssl/cert.pem:ro
+      - ./key.pem:/tmp/docker-mailserver/ssl/key.pem:ro
+      - /etc/localtime:/etc/localtime:ro
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    restart: always
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "25"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  galaxidata-roundcube:
+    image: roundcube/roundcubemail:latest
+    container_name: galaxidata-roundcube
+    environment:
+      - ROUNDCUBEMAIL_DEFAULT_HOST=ssl://galaxidata-mailserver
+      - ROUNDCUBEMAIL_DEFAULT_PORT=993
+      - ROUNDCUBEMAIL_SMTP_SERVER=tls://galaxidata-mailserver
+      - ROUNDCUBEMAIL_SMTP_PORT=587
+      - ROUNDCUBEMAIL_PLUGINS=archive,zipdownload
+      - ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE=25M
+      - ROUNDCUBEMAIL_SKIN=elastic
+    ports:
+      - "127.0.0.1:8090:80"
+    depends_on:
+      - galaxidata-mailserver
+    restart: always
+
+volumes:
+  galaxidata-mail-data:
+    external: true
+    name: deploy-galaxidata_mail_data
+  galaxidata-mail-state:
+    external: true
+    name: deploy-galaxidata_mail_state
+  galaxidata-mail-logs:
+    external: true
+    name: deploy-galaxidata_mail_logs
